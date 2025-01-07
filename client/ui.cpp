@@ -122,6 +122,7 @@ void UI::run()
 
         // 使用select,是包的话, 读包, 是命令的话去执行命令
         // 判断文件描述符是否可读，用来读取网络包
+        // 判断标准输入是否可读，用来判断是否有新的用户命令
         if (FD_ISSET(connfd, &rset)) {  /* socket is readable */
             cliPI.recvOnePacket();
         }

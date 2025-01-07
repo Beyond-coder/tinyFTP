@@ -741,6 +741,7 @@ string getCurrentTime()
 	return string(buf);
 }
 
+// 去获取当前文件系统的非root用户的可用空间
 unsigned long long getDiskAvailable()
 {
 	struct statfs diskInfo;

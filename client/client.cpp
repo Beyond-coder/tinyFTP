@@ -15,7 +15,6 @@ int main(int argc, char **argv)
 
 
 
-    // 构造函数，然后是run函数
     UI userInterface(argv[1]);
     userInterface.run();
 

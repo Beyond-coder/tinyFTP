@@ -64,15 +64,20 @@ void CliDTP::sendFile(const char *pathname, FILE *fp, uint32_t nslice, uint32_t 
 	}
 }
 
+// slicecap = 512
 void CliDTP::recvFile(const char *pathname, FILE *fp, uint32_t nslice, uint32_t sindex, uint16_t slicecap)
 {
+	// 引用
 	Packet & packet = *(this->ppacket);
+	// 传送的是本文，而不是文件
 	string hfilesize;
 	int m;
 	int oldProgress = 0, newProgress = 0;
 	// off64_t, 专门用于处理文件偏移, 有符号整数, 因为偏移可能是负数
-	// 当前位置的sindex * slicecap
+	// 当前位置=sindex * slicecap
+	// 估计是为了断点续传
 	off64_t curpos = sindex * slicecap;
+	// SEEK_SET表示相对于文件开头
 	if (lseek64(fileno(fp), curpos, SEEK_SET) < 0)
 	{
 		Error::ret("lseek64");
@@ -99,10 +104,12 @@ void CliDTP::recvFile(const char *pathname, FILE *fp, uint32_t nslice, uint32_t 
 						//cout << packet.getSBody() <<endl;
 						if (std::stoull(packet.getSBody()) > getDiskAvailable())
 						{
+							// 磁盘够用不通用
 							packet.sendSTAT_ERR("insufficient disk space");
 							Error::msg("insufficient disk space");
 							return;
 						} else {
+							// 够用则要再回送一个OK
 							packet.sendSTAT_OK("sufficient disk space, ok to tranfer");
 						}
 						break;
@@ -140,6 +147,7 @@ void CliDTP::recvFile(const char *pathname, FILE *fp, uint32_t nslice, uint32_t 
 				{
 					case DATA_FILE:
 					{
+						// 写入文件
 						m = fwrite(packet.getBody(), sizeof(char), packet.getBsize(), fp);
 						if (m != packet.getBsize())
 						{
@@ -166,6 +174,7 @@ void CliDTP::recvFile(const char *pathname, FILE *fp, uint32_t nslice, uint32_t 
 					}
 					case DATA_TEXT:
 					{
+						// 收到之后没有做处理
 						//cout << packet.getSBody() <<endl;
 						hfilesize =  packet.getSBody();
 						break;

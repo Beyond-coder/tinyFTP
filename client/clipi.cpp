@@ -448,7 +448,7 @@ void CliPI::cmdGET(std::vector<string> & paramVector)
 	}
 
 
-	// 检查文件是否存在
+	// 检查本地文件是否存在
 	if ((access(pathname.c_str(), F_OK)) == 0) {
 		
 		// string md5str = visualmd5sumNslice(pathname, tmp_sindex);
@@ -483,11 +483,11 @@ void CliPI::cmdGET(std::vector<string> & paramVector)
 	// 创建文件
 	FILE *fp;
 	// 以写入并且二进制模式打开文件
-	// 问题发送的时候为什么要接收呢？
 	if ( (fp = fopen(pathname.c_str(), "wb")) == NULL) {
 		Error::msg("%s", strerror_r(errno, buf, MAXLINE));
 		return;
 	} else {
+		// 发送命令过去
 		packet.sendCMD(GET, getEncodedParams(paramVector));
 	}
 
