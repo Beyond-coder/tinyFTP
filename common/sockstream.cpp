@@ -10,7 +10,7 @@ SockStream::readn(void *vptr, size_t n)
 	ptr = (char *)vptr;
 	nleft = n;
 	while (nleft > 0) {
-		// 有阻塞的模型
+		// 有阻塞的模型,有阻塞的读
 		if ( (nread = read(fd, ptr, nleft)) < 0) {
 			if (errno == EINTR)
 				nread = 0;		/* and call read() again */

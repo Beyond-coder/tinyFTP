@@ -4,7 +4,9 @@
 void * clientConnect(void * arg)
 {
     // 动态申请的因此需要delete
+    // 需要注意的是sesid是啥时候分配的
     ThreadArg * pthreadArg = (ThreadArg *)arg;
+    // 构造函数初始化了数据库,以及连接的文件描述符
     SrvPI srvPI(DBFILENAME, pthreadArg->fd);
 
     // 可以用一个eventloop来实现
@@ -20,11 +22,13 @@ void * clientConnect(void * arg)
 
 int main(int argc, char **argv)
 {
+    // 初始化数据库
     {
         // 打开数据库文件
         Database db(DBFILENAME);
 
         // 初始化数据库，每个用户有自己的目录
+        // 创建原始的几个用户目录
         db.init();
     }
    

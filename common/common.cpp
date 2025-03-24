@@ -71,7 +71,6 @@ Pthread_create(pthread_t *tid, const pthread_attr_t *attr,
 			   void * (*func)(void *), void *arg)
 {
 	int		n;
-
 	if ( (n = pthread_create(tid, attr, func, arg)) == 0)
 		return;
 	errno = n;
@@ -789,17 +788,24 @@ void disable_terminal_return(void)
     //make sure settings will be restored when program ends
     atexit(restore_terminal_settings);
 }
+
+/// @brief 通过stat函数获取文件的inode
+/// @param pathname 
+/// @return inode的string形式
 string getInode(const char * pathname)
 {
 	string inode;
 
+	// 文件状态信息
 	struct stat statBuf; 
 	char buf[MAXLINE];
+	// stat函数用来填充statBuf
     if (stat(pathname, &statBuf) < 0)
     {
     	Error::ret("\033[31mstat\033[0m");
     } else {
     	snprintf(buf, MAXLINE, "%lu", statBuf.st_ino);
+		// C字符串可以直接赋值给string
     	inode = buf;
     }
     return inode;

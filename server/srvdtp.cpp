@@ -102,14 +102,19 @@ void SrvDTP::insertNewFileMD5SUM(const char * pathname, Database *pdb)
 		
 	}   
 }
+
 void SrvDTP::sendFile(const char *pathname, uint32_t nslice, uint32_t sindex, uint16_t slicecap)
 {
 	//cout << endl  << endl << pathname << endl << endl;
+	// 引用的还是srvPI的packet
 	Packet & packet = *(this->ppacket);
 	char buf[MAXLINE];
+	// 获得db指针
 	Database * pdb = psrvPI->getPDB();
+	// 得到inode, inode：唯一标识文件的标识符
 	string inode = getInode(pathname);
 	std::map<string, string> selectParamMap = {  {"INODE", inode} };
+	// 查询数据库是否有这个文件的inode,使用inode来标识文件
     if (pdb->select("file", selectParamMap))
     {
        vector< map<string ,string> > resultMapVector = pdb->getResult();
@@ -149,6 +154,7 @@ void SrvDTP::sendFile(const char *pathname, uint32_t nslice, uint32_t sindex, ui
 	// 	packet.sendSTAT_OK();
 	// }
 	
+	// 文件不存在这里就会出错
 	string sizestr = getFilesize(string(pathname));
 	if (sizestr.empty())
 	{
@@ -171,6 +177,7 @@ void SrvDTP::sendFile(const char *pathname, uint32_t nslice, uint32_t sindex, ui
 		return;
 	}
 
+	
 	//if ( (fp = fopen(pathname, "rb")) == NULL)
 	if ( psrvPI->setFp(fopen(pathname, "rb")) == NULL)
 	{

@@ -114,6 +114,7 @@ bool CliPI::sendOnePacket(PacketStruct * ps, size_t nbytes)
 		// 文件描述符可读
 		if (FD_ISSET(connfd, &rset)) /* socket is readable */
 		{	
+			// 这段代码有什么用？
 			readpacket.reset(NPACKET);
 			if ( (n = connSockStream.readn(readpacket.getPs(), PACKSIZE)) == 0)
 			{
@@ -191,6 +192,7 @@ void CliPI::run(uint16_t cmdid, std::vector<string> & paramVector)
 		case RPUT:
 			cmdRPUT(paramVector);
 			break;
+		// 用于查看远程服务器的,应该是回送一条消息
 		case LS:
 			cmdLS(paramVector);
 			break;
@@ -1202,6 +1204,7 @@ void CliPI::cmdLS(std::vector<string> & paramVector)
 	packet.sendCMD(LS, getEncodedParams(paramVector));
 
 	// first receive response
+	// 第一个一定是状态包, 进行验证
 	recvOnePacket();
 	if (packet.getTagid() == TAG_STAT) {
 		if (packet.getStatid() == STAT_OK) {
@@ -1221,6 +1224,7 @@ void CliPI::cmdLS(std::vector<string> & paramVector)
 	int cnt = 0;
 	while(recvOnePacket()) 
 	{
+		// 数据包 && DATA_LIST数据
 		if (packet.getTagid() == TAG_DATA && packet.getDataid() == DATA_LIST) {
 			++cnt;
 			cerr << packet.getSBody();

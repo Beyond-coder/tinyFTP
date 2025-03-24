@@ -87,7 +87,7 @@ typedef struct threadArg
 
 typedef enum sockType
 {
-	SRV_SOCKET,					// server socket tyoe
+	SRV_SOCKET,					// server socket type
 	CLI_SOCKET					// client socket type
 } SockType;
 
@@ -126,7 +126,7 @@ typedef struct packetStruct
 {
 	/* packet header */
 	uint32_t sesid;			// Session id
-	uint16_t tagid;			// different packet type: CMD, DATA, INFO 
+	uint16_t tagid;				// different packet type: CMD, DATA, INFO 
 
 	uint16_t cmdid;			// Command: ID
 	uint16_t statid;		// status code id
